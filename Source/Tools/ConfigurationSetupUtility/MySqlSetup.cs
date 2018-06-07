@@ -301,7 +301,7 @@ namespace ConfigurationSetupUtility
                         string statement;
 
                         if (line.StartsWith("CREATE DATABASE") || line.StartsWith("USE"))
-                            line = line.Replace("ProjectAlpha", DatabaseName);
+                            line = line.Replace("Palpha", DatabaseName);
 
                         if (line.StartsWith("DELIMITER "))
                         {

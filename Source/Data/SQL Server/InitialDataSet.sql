@@ -1,4 +1,4 @@
-USE ProjectAlpha
+USE Palpha
 GO
 
 INSERT INTO Company(Acronym, MapAcronym, Name, LoadOrder) VALUES('AEP', 'AEP', 'American Electric Power', 1)

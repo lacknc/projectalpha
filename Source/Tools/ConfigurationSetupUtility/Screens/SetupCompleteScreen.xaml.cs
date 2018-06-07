@@ -56,7 +56,7 @@ namespace ConfigurationSetupUtility.Screens
         // Fields
 
         private Dictionary<string, object> m_state;
-        private ServiceController m_ProjectAlphaServiceController;
+        private ServiceController m_PalphaServiceController;
 
         #endregion
 
@@ -68,7 +68,7 @@ namespace ConfigurationSetupUtility.Screens
         public SetupCompleteScreen()
         {
             InitializeComponent();
-            InitializeProjectAlphaServiceController();
+            InitializePalphaServiceController();
             InitializeServiceCheckboxState();
             InitializeManagerCheckboxState();
         }
@@ -243,53 +243,53 @@ namespace ConfigurationSetupUtility.Screens
                         // Remove old configuration file settings
                         try
                         {
-                            ConfigurationFile ProjectAlphaConfig = ConfigurationFile.Open("ProjectAlpha.exe.config");
+                            ConfigurationFile PalphaConfig = ConfigurationFile.Open("Palpha.exe.config");
 
                             // Some of the crypto settings elements were renamed for consistency, remove the old ones
-                            CategorizedSettingsElementCollection cryptoSection = ProjectAlphaConfig.Settings["cryptographyServices"];
+                            CategorizedSettingsElementCollection cryptoSection = PalphaConfig.Settings["cryptographyServices"];
                             cryptoSection.Remove("RetryDelayInterval");
                             cryptoSection.Remove("MaximumRetryAttempts");
 
-                            // Example connection settings are updated between builds - remove the section and ProjectAlpha will add back the latest
-                            ProjectAlphaConfig.Settings.Remove("exampleConnectionSettings");
+                            // Example connection settings are updated between builds - remove the section and Palpha will add back the latest
+                            PalphaConfig.Settings.Remove("exampleConnectionSettings");
 
                             // Data publisher categories are now always lower case (such that code references are case insensitive)
-                            ProjectAlphaConfig.Settings.Remove("dataPublisher");
+                            PalphaConfig.Settings.Remove("dataPublisher");
 
-                            ProjectAlphaConfig.Save(ConfigurationSaveMode.Full);
+                            PalphaConfig.Save(ConfigurationSaveMode.Full);
                         }
                         catch
                         {
                             // Just continue on errors with removal of old settings - this is not critical
                         }
 
-                        // If the user requested it, start or restart the ProjectAlpha service
+                        // If the user requested it, start or restart the Palpha service
                         if (m_serviceStartCheckBox.IsChecked.Value)
                         {
                             try
                             {
 #if DEBUG
-                                Process.Start("ProjectAlpha.exe");
+                                Process.Start("Palpha.exe");
 #else
-                                m_ProjectAlphaServiceController.Start();
+                                m_PalphaServiceController.Start();
 #endif
                             }
                             catch
                             {
-                                MessageBox.Show("The configuration utility was unable to start ProjectAlpha service, you will need to manually start the service.", "Cannot Start Windows Service", MessageBoxButton.OK, MessageBoxImage.Information);
+                                MessageBox.Show("The configuration utility was unable to start Palpha service, you will need to manually start the service.", "Cannot Start Windows Service", MessageBoxButton.OK, MessageBoxImage.Information);
                             }
                         }
 
-                        // If the user requested it, start the ProjectAlpha Manager.
+                        // If the user requested it, start the Palpha Manager.
                         if (m_managerStartCheckBox.IsChecked.Value)
                         {
-                            Process.Start("ProjectAlphaManager.exe");
+                            Process.Start("PalphaManager.exe");
                         }
                     }
                     finally
                     {
-                        if (m_ProjectAlphaServiceController != null)
-                            m_ProjectAlphaServiceController.Close();
+                        if (m_PalphaServiceController != null)
+                            m_PalphaServiceController.Close();
                     }
                 }
 
@@ -311,7 +311,7 @@ namespace ConfigurationSetupUtility.Screens
                 m_state = value;
 
                 if (Convert.ToBoolean(m_state["restarting"]))
-                    m_serviceStartCheckBox.Content = "Restart the ProjectAlpha";
+                    m_serviceStartCheckBox.Content = "Restart the Palpha";
             }
         }
 
@@ -329,36 +329,36 @@ namespace ConfigurationSetupUtility.Screens
 
         #region [ Methods ]
 
-        // Initializes the ProjectAlpha service controller.
-        private void InitializeProjectAlphaServiceController()
+        // Initializes the Palpha service controller.
+        private void InitializePalphaServiceController()
         {
             ServiceController[] services = ServiceController.GetServices();
-            m_ProjectAlphaServiceController = services.SingleOrDefault(svc => string.Compare(svc.ServiceName, "ProjectAlpha", true) == 0);
+            m_PalphaServiceController = services.SingleOrDefault(svc => string.Compare(svc.ServiceName, "Palpha", true) == 0);
         }
 
-        // Initializes the state of the ProjectAlpha service checkbox.
+        // Initializes the state of the Palpha service checkbox.
         private void InitializeServiceCheckboxState()
         {
 #if DEBUG
-            bool serviceInstalled = File.Exists("ProjectAlpha.exe");
+            bool serviceInstalled = File.Exists("Palpha.exe");
 #else
-            bool serviceInstalled = m_ProjectAlphaServiceController != null;
+            bool serviceInstalled = m_PalphaServiceController != null;
 #endif
             m_serviceStartCheckBox.IsChecked = serviceInstalled;
             m_serviceStartCheckBox.IsEnabled = serviceInstalled;
         }
 
-        // Initializes the state of the ProjectAlpha Manager checkbox.
+        // Initializes the state of the Palpha Manager checkbox.
         private void InitializeManagerCheckboxState()
         {
-            bool managerInstalled = File.Exists("ProjectAlphaManager.exe");
+            bool managerInstalled = File.Exists("PalphaManager.exe");
             m_managerStartCheckBox.IsChecked = managerInstalled;
             m_managerStartCheckBox.IsEnabled = managerInstalled;
         }
 
         private void ValidateGrafanaBindings()
         {
-            string configFileName = Path.Combine(Directory.GetCurrentDirectory(), "ProjectAlpha.exe.config");
+            string configFileName = Path.Combine(Directory.GetCurrentDirectory(), "Palpha.exe.config");
 
             if (!File.Exists(configFileName))
                 return;
@@ -467,7 +467,7 @@ namespace ConfigurationSetupUtility.Screens
 
         private void ValidateInternalDataPublisher()
         {
-            string configFile = Directory.GetCurrentDirectory() + "\\ProjectAlpha.exe.config";
+            string configFile = Directory.GetCurrentDirectory() + "\\Palpha.exe.config";
             string configText = File.ReadAllText(configFile);
             string replacedConfigText = configText.Replace("<datapublisher>", "<internaldatapublisher>").Replace("</datapublisher>", "</internaldatapublisher>");
             File.WriteAllText(configFile, replacedConfigText);

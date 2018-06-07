@@ -1,4 +1,4 @@
-USE ProjectAlpha;
+USE Palpha;
 
 INSERT INTO Node(Name, CompanyID, Description, Settings, MenuType, MenuData, Master, LoadOrder, Enabled) 
 	VALUES('Default', NULL, 'Default node', 'RemoteStatusServerConnectionString={server=localhost:8515;integratedSecurity=true};dataPublisherPort=6180', 'File', 'Menu.xml', 1, 0, 1);

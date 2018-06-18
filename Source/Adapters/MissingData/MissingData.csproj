@@ -36,6 +36,10 @@
     <Reference Include="GSF.TimeSeries">
       <HintPath>..\..\Dependencies\GSF\GSF.TimeSeries.dll</HintPath>
     </Reference>
+    <Reference Include="PhasorProtocolAdapters, Version=2.3.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dependencies\GSF\PhasorProtocolAdapters.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
